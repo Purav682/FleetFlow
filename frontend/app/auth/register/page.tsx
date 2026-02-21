@@ -1,143 +1,188 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/components/providers/AuthProvider';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Link from 'next/link';
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+import { useAuth } from "@/components/providers/AuthProvider";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { UserRole, readError } from "@/lib/api-client";
+
+const roles: UserRole[] = ["Manager", "Dispatcher", "SafetyOfficer", "Analyst"];
+
+const registerSchema = z
+  .object({
+    name: z.string().min(2, "Name is required"),
+    email: z.string().email("Enter a valid email"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string().min(8, "Confirm your password"),
+    role: z.enum(["Manager", "Dispatcher", "SafetyOfficer", "Analyst"]),
+    department: z.string().optional(),
+    region: z.string().optional(),
+    hub_location: z.string().optional(),
+    certification_id: z.string().optional(),
+    finance_unit: z.string().optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+type RegisterForm = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { register } = useAuth();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState<'manager' | 'dispatcher'>('dispatcher');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { register: registerUser } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+    setError,
+    watch,
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      role: "Dispatcher",
+      department: "",
+      region: "",
+      hub_location: "",
+      certification_id: "",
+      finance_unit: "",
+    },
+  });
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
+  const selectedRole = watch("role");
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
-
-    setIsLoading(true);
-
+  const onSubmit = async (values: RegisterForm) => {
     try {
-      await register(name, email, password, role);
-      router.push('/');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
-    } finally {
-      setIsLoading(false);
+      await registerUser({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        role: values.role,
+        department: values.department || undefined,
+        region: values.region || undefined,
+        hub_location: values.hub_location || undefined,
+        certification_id: values.certification_id || undefined,
+        finance_unit: values.finance_unit || undefined,
+      });
+      router.push("/auth/login");
+    } catch (err) {
+      setError("root", { message: readError(err, "Registration failed") });
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <div className="flex items-center justify-center mb-4">
-            <div className="h-12 w-12 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-2xl font-bold text-primary-foreground">F</span>
-            </div>
-          </div>
-          <CardTitle className="text-2xl text-center">Create an Account</CardTitle>
-          <CardDescription className="text-center">
-            Enter your information to get started
-          </CardDescription>
+      <Card className="w-full max-w-xl">
+        <CardHeader>
+          <CardTitle>Create FleetFlow User</CardTitle>
+          <CardDescription>Register a new role-based account</CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {errors.root?.message && (
+              <Alert variant="destructive" className="md:col-span-2">
+                <AlertDescription>{errors.root.message}</AlertDescription>
               </Alert>
             )}
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+
+            <div className="space-y-2 md:col-span-2">
+              <Label>Name</Label>
+              <Input disabled={isSubmitting} {...register("name")} />
+              {errors.name?.message && <p className="text-xs text-red-600">{errors.name.message}</p>}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="john@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+
+            <div className="space-y-2 md:col-span-2">
+              <Label>Email</Label>
+              <Input type="email" disabled={isSubmitting} {...register("email")} />
+              {errors.email?.message && <p className="text-xs text-red-600">{errors.email.message}</p>}
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
-              <Select value={role} onValueChange={(value: 'manager' | 'dispatcher') => setRole(value)}>
+              <Label>Role</Label>
+              <Select
+                value={selectedRole}
+                onValueChange={(value: UserRole) => {
+                  setValue("role", value, { shouldValidate: true });
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="dispatcher">Dispatcher</SelectItem>
-                  <SelectItem value="manager">Manager</SelectItem>
+                  {roles.map((role) => (
+                    <SelectItem key={role} value={role}>
+                      {role}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
+              {errors.role?.message && <p className="text-xs text-red-600">{errors.role.message}</p>}
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+              <Label>Department</Label>
+              <Input disabled={isSubmitting} {...register("department")} />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+              <Label>Region</Label>
+              <Input disabled={isSubmitting} {...register("region")} />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Hub Location</Label>
+              <Input disabled={isSubmitting} {...register("hub_location")} />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Certification ID</Label>
+              <Input disabled={isSubmitting} {...register("certification_id")} />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Finance Unit</Label>
+              <Input disabled={isSubmitting} {...register("finance_unit")} />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Password</Label>
+              <Input type="password" disabled={isSubmitting} {...register("password")} />
+              {errors.password?.message && <p className="text-xs text-red-600">{errors.password.message}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label>Confirm Password</Label>
+              <Input type="password" disabled={isSubmitting} {...register("confirmPassword")} />
+              {errors.confirmPassword?.message && (
+                <p className="text-xs text-red-600">{errors.confirmPassword.message}</p>
+              )}
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Creating account...' : 'Create Account'}
+
+          <CardFooter className="flex flex-col gap-3 items-stretch">
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Creating account..." : "Create Account"}
             </Button>
             <p className="text-sm text-muted-foreground text-center">
-              Already have an account?{' '}
-              <Link href="/auth/login" className="text-primary hover:underline">
-                Sign in here
+              Already have an account?{" "}
+              <Link href="/auth/login" className="text-primary underline">
+                Login
               </Link>
             </p>
           </CardFooter>
