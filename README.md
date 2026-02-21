@@ -4,11 +4,11 @@
   
   **A comprehensive fleet management solution for logistics operations**
   
-  [![Next.js](https://img.shields.io/badge/Next.js-16.1-black?logo=next.js)](https://nextjs.org/)
-  [![React](https://img.shields.io/badge/React-19-blue?logo=react)](https://reactjs.org/)
-  [![Node.js](https://img.shields.io/badge/Node.js-Express-green?logo=node.js)](https://nodejs.org/)
+  [![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black?logo=next.js)](https://nextjs.org/)
+  [![React](https://img.shields.io/badge/React-19.2.4-blue?logo=react)](https://reactjs.org/)
+  [![Node.js](https://img.shields.io/badge/Node.js-Express_5.2-green?logo=node.js)](https://nodejs.org/)
   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-blue?logo=postgresql)](https://www.postgresql.org/)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-blue?logo=typescript)](https://www.typescriptlang.org/)
 
 </div>
 
@@ -37,6 +37,12 @@
 **FleetFlow** is a modern, full-stack fleet management system designed to streamline logistics operations for transportation businesses. It provides comprehensive tools for managing vehicles, drivers, trips, fuel consumption, and maintenance scheduling while offering real-time analytics and reporting capabilities.
 
 The MVP focuses on core fleet operations with role-based access control, ensuring that managers, dispatchers, safety officers, and analysts have the appropriate tools and permissions for their responsibilities.
+
+### 📌 Project Status
+
+**Current State:** The project has a complete backend API structure with all routes, controllers, validators, and database schema defined. The frontend includes a modern Next.js interface with mock data.
+
+**⚠️ Important Note:** API routes are defined but **not yet registered** in `server.js`. See the [Getting Started](#-getting-started) section for instructions on registering routes to make the API functional.
 
 ### Key Objectives
 
@@ -115,27 +121,30 @@ The MVP focuses on core fleet operations with role-based access control, ensurin
 
 ### Frontend
 
-- **Framework**: [Next.js 16.1](https://nextjs.org/) (App Router)
-- **UI Library**: [React 19](https://reactjs.org/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/)
-- **Component Library**: [Radix UI](https://www.radix-ui.com/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Forms**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
-- **HTTP Client**: [Axios](https://axios-http.com/)
-- **Date Handling**: [date-fns](https://date-fns.org/)
-- **State Management**: React Context API
+- **Framework**: [Next.js 16.1.6](https://nextjs.org/) (App Router)
+- **UI Library**: [React 19.2.4](https://reactjs.org/)
+- **Language**: [TypeScript 5.7.3](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS 4.2.0](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/)
+- **Component Library**: [Radix UI](https://www.radix-ui.com/) (Complete set of accessible primitives)
+- **Icons**: [Lucide React 0.564.0](https://lucide.dev/)
+- **Forms**: [React Hook Form 7.54.1](https://react-hook-form.com/) + [Zod 3.24.1](https://zod.dev/)
+- **HTTP Client**: [Axios 1.6.5](https://axios-http.com/)
+- **Date Handling**: [date-fns 4.1.0](https://date-fns.org/)
+- **Charts**: [Recharts 2.15.0](https://recharts.org/)
+- **Notifications**: [Sonner 1.7.1](https://sonner.emilkowal.ski/)
+- **Theme**: [next-themes 0.4.6](https://github.com/pacocoursey/next-themes) for dark mode
+- **State Management**: React Context API + Local State
 
 ### Backend
 
-- **Runtime**: [Node.js](https://nodejs.org/)
-- **Framework**: [Express 5.2](https://expressjs.com/)
+- **Runtime**: [Node.js](https://nodejs.org/) (v18+ recommended)
+- **Framework**: [Express 5.2.1](https://expressjs.com/)
 - **Language**: JavaScript (ES Modules)
 - **Database**: [PostgreSQL 13+](https://www.postgresql.org/)
-- **Database Driver**: [node-postgres (pg)](https://node-postgres.com/)
-- **Authentication**: [JWT (jsonwebtoken)](https://github.com/auth0/node-jsonwebtoken)
-- **Password Hashing**: [bcrypt](https://github.com/kelektiv/node.bcrypt.js)
-- **Environment Variables**: [dotenv](https://github.com/motdotla/dotenv)
+- **Database Driver**: [node-postgres (pg) 8.18.0](https://node-postgres.com/)
+- **Authentication**: [JWT (jsonwebtoken) 9.0.3](https://github.com/auth0/node-jsonwebtoken)
+- **Password Hashing**: [bcrypt 6.0.0](https://github.com/kelektiv/node.bcrypt.js)
+- **Environment Variables**: [dotenv 17.3.1](https://github.com/motdotla/dotenv)
 
 ### Database
 
@@ -152,6 +161,7 @@ The MVP focuses on core fleet operations with role-based access control, ensurin
 FleetFlow/
 │
 ├── backend/                          # Backend API Server
+│   ├── .env.example                  # Environment variables template
 │   ├── config/                       # Configuration files
 │   │   └── db.js                     # Database configuration
 │   │
@@ -174,7 +184,7 @@ FleetFlow/
 │   │       └── 002_add_user_profile_fields.sql
 │   │
 │   ├── middleware/                   # Express middleware
-│   │   ├── auth.js                   # JWT authentication
+│   │   ├── auth.js                   # JWT authentication & authorization
 │   │   ├── errors.js                 # Error handling
 │   │   └── validate.js               # Request validation
 │   │
@@ -197,16 +207,21 @@ FleetFlow/
 │   │   └── vehicleValidators.js
 │   │
 │   ├── package.json                  # Backend dependencies
+│   ├── package-lock.json             # Dependency lock file
 │   └── server.js                     # Express server entry point
 │
 ├── frontend/                         # Next.js Frontend
+│   ├── .env.example                  # Environment variables template
 │   ├── app/                          # Next.js App Router
 │   │   ├── auth/                     # Authentication pages
 │   │   │   ├── login/
 │   │   │   └── register/
 │   │   ├── dispatch/                 # Dispatch management
+│   │   │   └── page.tsx
 │   │   ├── drivers/                  # Driver management
+│   │   │   └── page.tsx
 │   │   ├── vehicles/                 # Vehicle management
+│   │   │   └── page.tsx
 │   │   ├── layout.tsx                # Root layout
 │   │   ├── page.tsx                  # Dashboard page
 │   │   └── globals.css               # Global styles
@@ -233,7 +248,8 @@ FleetFlow/
 │   │   │   ├── DriversTable.tsx
 │   │   │   ├── TripsTable.tsx
 │   │   │   └── VehiclesTable.tsx
-│   │   ├── ui/                       # shadcn/ui components
+│   │   ├── ui/                       # shadcn/ui components (60+ components)
+│   │   │   ├── button.tsx, card.tsx, dialog.tsx, etc.
 │   │   └── theme-provider.tsx
 │   │
 │   ├── hooks/                        # Custom React hooks
@@ -249,9 +265,12 @@ FleetFlow/
 │   │
 │   ├── public/                       # Static assets
 │   ├── styles/                       # Additional styles
+│   │   └── globals.css
 │   ├── components.json               # shadcn/ui configuration
 │   ├── next.config.mjs               # Next.js configuration
+│   ├── next-env.d.ts                 # Next.js TypeScript definitions
 │   ├── package.json                  # Frontend dependencies
+│   ├── pnpm-lock.yaml                # pnpm lock file
 │   ├── postcss.config.mjs            # PostCSS configuration
 │   └── tsconfig.json                 # TypeScript configuration
 │
@@ -310,7 +329,36 @@ cd backend
 npm run migrate
 ```
 
-6. **Start the Development Servers**
+6. **Important: Register Routes in Backend**
+
+⚠️ **Current State:** The API routes are defined but not yet registered in `server.js`. You need to import and register them.
+
+Add these imports at the top of `backend/server.js`:
+
+```javascript
+import authRoutes from "./routes/auth.js";
+import vehiclesRoutes from "./routes/vehicles.js";
+import driversRoutes from "./routes/drivers.js";
+import tripsRoutes from "./routes/trips.js";
+import fuelRoutes from "./routes/fuel.js";
+import maintenanceRoutes from "./routes/maintenance.js";
+import reportsRoutes from "./routes/reports.js";
+```
+
+Then register the routes after `app.use(express.json())`:
+
+```javascript
+// Register API routes
+app.use("/api/auth", authRoutes);
+app.use("/api/vehicles", vehiclesRoutes);
+app.use("/api/drivers", driversRoutes);
+app.use("/api/trips", tripsRoutes);
+app.use("/api/fuel", fuelRoutes);
+app.use("/api/maintenance", maintenanceRoutes);
+app.use("/api/reports", reportsRoutes);
+```
+
+7. **Start the Development Servers**
 
 **Backend** (Terminal 1):
 
@@ -324,13 +372,14 @@ npm run dev
 ```bash
 cd frontend
 pnpm dev
+# or: npm run dev
 ```
 
-7. **Access the Application**
+8. **Access the Application**
 
 - Frontend: [http://localhost:3000](http://localhost:3000)
-- Backend API: [http://localhost:4000](http://localhost:4000)
-- Health Check: [http://localhost:4000/health](http://localhost:4000/health)
+- Backend Health Check: [http://localhost:4000/health](http://localhost:4000/health)
+- API Base: [http://localhost:4000/api](http://localhost:4000/api) (after registering routes)
 
 ---
 
@@ -338,40 +387,54 @@ pnpm dev
 
 ### Backend (`backend/.env`)
 
+Create a `.env` file in the `backend/` directory based on `.env.example`:
+
 ```env
 # Server Configuration
 PORT=4000
 HOST=0.0.0.0
-NODE_ENV=development
 
-# Database Configuration
-DB_HOST=localhost
+# Database Configuration (Option 1: Individual parameters)
+DB_HOST=127.0.0.1
 DB_PORT=5432
-DB_DATABASE=fleetflow
-DB_USER=your_db_user
-DB_PASSWORD=your_db_password
+DB_USER=postgres
+DB_PASSWORD=your_password_here
+DB_NAME=fleetflow
+DB_SSL=false
+
+# JWT Authentication
+JWT_SECRET=replace-with-strong-secret-key
+JWT_EXPIRES_IN=12h
 
 # Database Lifecycle
+# Safe defaults: run versioned migrations on startup
 DB_RUN_MIGRATIONS_ON_STARTUP=true
+
+# WARNING: Dangerous reset - runs destructive bootstrap from database/schema.sql
 DB_BOOTSTRAP_ON_STARTUP=false
-
-# Authentication
-JWT_SECRET=your_jwt_secret_key_here
-JWT_EXPIRES_IN=7d
-
-# CORS (Optional)
-ALLOWED_ORIGINS=http://localhost:3000
 ```
+
+**Important Notes:**
+
+- Change `JWT_SECRET` to a strong random string in production
+- Set `DB_BOOTSTRAP_ON_STARTUP=false` in production (it drops all tables!)
+- The backend runs on port 4000 by default
 
 ### Frontend (`frontend/.env.local`)
 
+Create a `.env.local` file in the `frontend/` directory based on `.env.example`:
+
 ```env
 # API Configuration
-NEXT_PUBLIC_API_URL=http://localhost:4000
-
-# Environment
-NODE_ENV=development
+# Note: Update this if your backend runs on a different port or has an /api prefix
+NEXT_PUBLIC_API_URL=http://localhost:4000/api
 ```
+
+**Important Notes:**
+
+- The `.env.example` file references port 5000, but the backend defaults to port 4000
+- Adjust the `NEXT_PUBLIC_API_URL` to match your backend configuration
+- Add `/api` prefix if your routes are mounted under that path
 
 ---
 
@@ -434,16 +497,30 @@ npm run dev
 ### Base URL
 
 ```
-http://localhost:4000
+http://localhost:4000/api
 ```
+
+**Note:** Routes must be registered in `server.js` with the `/api` prefix for this to work.
 
 ### Authentication
 
-All protected endpoints require a JWT token in the Authorization header:
+All protected endpoints (except `/auth/register` and `/auth/login`) require a JWT token in the Authorization header:
 
 ```
 Authorization: Bearer <token>
 ```
+
+### API Response Format
+
+Successful responses return JSON with appropriate status codes:
+
+- `200` - Success
+- `201` - Created
+- `400` - Bad Request (validation error)
+- `401` - Unauthorized
+- `403` - Forbidden (insufficient permissions)
+- `404` - Not Found
+- `500` - Internal Server Error
 
 ### Endpoints
 
@@ -456,20 +533,21 @@ Authorization: Bearer <token>
 
 #### Vehicles
 
-| Method | Endpoint        | Description       | Roles               |
-| ------ | --------------- | ----------------- | ------------------- |
-| GET    | `/vehicles`     | List all vehicles | All                 |
-| POST   | `/vehicles`     | Create vehicle    | Manager, Dispatcher |
-| PUT    | `/vehicles/:id` | Update vehicle    | Manager, Dispatcher |
+| Method | Endpoint               | Description             | Roles                                       |
+| ------ | ---------------------- | ----------------------- | ------------------------------------------- |
+| GET    | `/vehicles`            | List all vehicles       | Manager, Dispatcher, SafetyOfficer, Analyst |
+| POST   | `/vehicles`            | Create vehicle          | Manager, Dispatcher                         |
+| PUT    | `/vehicles/:id/status` | Update vehicle status   | Manager, Dispatcher                         |
+| GET    | `/vehicles/available`  | List available vehicles | Manager, Dispatcher                         |
 
 #### Drivers
 
-| Method | Endpoint                    | Description                       | Roles                           |
-| ------ | --------------------------- | --------------------------------- | ------------------------------- |
-| GET    | `/drivers`                  | List all drivers                  | All                             |
-| POST   | `/drivers`                  | Create driver                     | Manager, SafetyOfficer          |
-| PUT    | `/drivers/:id`              | Update driver                     | Manager, SafetyOfficer          |
-| GET    | `/drivers/expired-licenses` | Get drivers with expired licenses | Manager, SafetyOfficer, Analyst |
+| Method | Endpoint              | Description           | Roles                                       |
+| ------ | --------------------- | --------------------- | ------------------------------------------- |
+| GET    | `/drivers`            | List all drivers      | Manager, Dispatcher, SafetyOfficer, Analyst |
+| POST   | `/drivers`            | Create driver         | Manager, SafetyOfficer                      |
+| PUT    | `/drivers/:id/status` | Update driver status  | Manager, SafetyOfficer                      |
+| GET    | `/drivers/eligible`   | List eligible drivers | Manager, Dispatcher, SafetyOfficer          |
 
 #### Trips
 
@@ -482,11 +560,11 @@ Authorization: Bearer <token>
 
 #### Fuel
 
-| Method | Endpoint                      | Description                 | Roles               |
-| ------ | ----------------------------- | --------------------------- | ------------------- |
-| POST   | `/fuel`                       | Log fuel consumption        | Manager, Dispatcher |
-| GET    | `/fuel/efficiency/:vehicleId` | Get vehicle fuel efficiency | All                 |
-| GET    | `/fuel/monthly-expense`       | Monthly fuel expenses       | Manager, Analyst    |
+| Method | Endpoint            | Description              | Roles                        |
+| ------ | ------------------- | ------------------------ | ---------------------------- |
+| POST   | `/fuel`             | Log fuel consumption     | Manager, Dispatcher          |
+| GET    | `/fuel/vehicle/:id` | Get fuel logs by vehicle | Manager, Dispatcher, Analyst |
+| GET    | `/fuel/trip/:id`    | Get fuel logs by trip    | Manager, Dispatcher, Analyst |
 
 #### Maintenance
 
@@ -497,11 +575,11 @@ Authorization: Bearer <token>
 
 #### Reports
 
-| Method | Endpoint                     | Description            | Roles                           |
-| ------ | ---------------------------- | ---------------------- | ------------------------------- |
-| GET    | `/reports/dashboard`         | Dashboard metrics      | Manager, Analyst, SafetyOfficer |
-| GET    | `/reports/fleet-utilization` | Fleet utilization rate | Manager, Analyst                |
-| GET    | `/reports/cost-per-trip`     | Cost analysis by trip  | Manager, Analyst                |
+| Method | Endpoint                              | Description                 | Roles                           |
+| ------ | ------------------------------------- | --------------------------- | ------------------------------- |
+| GET    | `/reports/dashboard`                  | Dashboard metrics           | Manager, Analyst, SafetyOfficer |
+| GET    | `/reports/vehicle-cost/:id`           | Cost analysis by vehicle    | Manager, Analyst                |
+| GET    | `/reports/fuel-efficiency/:vehicleId` | Fuel efficiency for vehicle | Manager, Analyst                |
 
 ---
 
@@ -610,25 +688,40 @@ npm run migrate
 
 ## 🚢 Deployment
 
+### Prerequisites
+
+⚠️ **Before Deployment:** Ensure API routes are registered in `server.js`. See the [Getting Started](#-getting-started) section for details.
+
 ### Backend Deployment
 
 1. **Environment Setup**
    - Set all required environment variables
    - Use `DB_RUN_MIGRATIONS_ON_STARTUP=true` to auto-migrate
-   - Set `NODE_ENV=production`
+   - Set `JWT_SECRET` to a strong random string
+   - **Important**: Set `DB_BOOTSTRAP_ON_STARTUP=false` (destructive in production)
 
 2. **Database**
    - Provision PostgreSQL 13+ instance
    - Run migrations on first deploy
    - Configure connection pooling
+   - Ensure database credentials are secure
 
-3. **Server**
+3. **Register API Routes**
+   - Import and register all route modules in `server.js`
+   - Mount routes under `/api` prefix
+
+4. **Server**
    ```bash
+   cd backend
    npm install --production
    npm start
    ```
 
 ### Frontend Deployment
+
+1. **Environment Setup**
+   - Set `NEXT_PUBLIC_API_URL` to your backend API URL
+   - Include `/api` prefix if routes are mounted under that path
 
 #### Vercel (Recommended for Next.js)
 
