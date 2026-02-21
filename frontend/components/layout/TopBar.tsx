@@ -1,0 +1,56 @@
+'use client';
+
+import { Menu, Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+
+interface TopBarProps {
+  title?: string;
+  onMenuClick?: () => void;
+}
+
+export function TopBar({ title = 'Dashboard', onMenuClick }: TopBarProps) {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return (
+    <div className="h-16 border-b border-border bg-background flex items-center justify-between px-4 md:px-6">
+      <div className="flex items-center gap-4">
+        <button
+          onClick={onMenuClick}
+          className="md:hidden p-2 hover:bg-muted rounded-lg transition-colors"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <h1 className="text-xl font-semibold">{title}</h1>
+      </div>
+
+      <div className="flex items-center gap-2">
+        {mounted && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="rounded-lg"
+          >
+            {theme === 'dark' ? (
+              <Sun className="w-5 h-5" />
+            ) : (
+              <Moon className="w-5 h-5" />
+            )}
+          </Button>
+        )}
+
+        {/* User Menu Placeholder */}
+        <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center text-primary font-semibold cursor-pointer hover:bg-primary/30 transition-colors">
+          JM
+        </div>
+      </div>
+    </div>
+  );
+}
